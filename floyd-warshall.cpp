@@ -1,22 +1,38 @@
-class Solution {
-    public int networkDelayTime(int[][] times, int N, int K) {
-        int MAX = 1000000;
-        int[][] dist = new int[N][N];
-        for(int i = 0; i < N; i++)
-            Arrays.fill(dist[i], MAX);
-        for(int i = 0; i < N; i++)
-            dist[i][i] = 0;
-        for(int[] e : times)
-            dist[e[0] - 1][e[1] - 1] = e[2];
-        
-        for(int k = 0; k < N; k++)
-            for(int i = 0; i < N; i++)
-                for(int j = 0; j < N; j++) 
-                    dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
-        
-        int maxwait = 0;
-        for(int i = 0; i < N; i++)
-            maxwait = Math.max(maxwait, dist[K - 1][i]);
-        return maxwait == MAX ? -1 : maxwait;
+// Function to implement Floyd-Warshall algorithm
+void floydWarshall(vector<vector<int>>& graph) {
+    int V = graph.size();
+    
+    // Initialize distance matrix
+    vector<vector<int>> dist(V, vector<int>(V, 0));
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            dist[i][j] = graph[i][j];
+        }
+    }
+    
+    // Update distance matrix by considering all vertices as intermediate vertices
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                // If vertex k is on the shortest path from i to j, update dist[i][j]
+                if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX && dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
+    }
+    
+    // Print the shortest distances between every pair of vertices
+    cout << "Shortest distances between every pair of vertices:\n";
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (dist[i][j] == INT_MAX) {
+                cout << "INF ";
+            } else {
+                cout << dist[i][j] << " ";
+            }
+        }
+        cout << endl;
     }
 }
+

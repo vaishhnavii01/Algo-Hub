@@ -1,20 +1,30 @@
-class Solution {
-    public int networkDelayTime(int[][] times, int N, int K) {
-        int[] dist = new int[N + 1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        
-        dist[K] = 0;
-        for(int i = 1; i < N; i++) {
-            for(int[] e : times) {
-                int u = e[0], v = e[1], w = e[2];
-                if(dist[u] != Integer.MAX_VALUE && dist[v] > dist[u] + w)
-                    dist[v] = dist[u] + w;
+// Function to find the shortest paths from a source vertex to all other vertices using Bellman-Ford algorithm
+void bellmanFord(vector<Edge>& edges, int V, int src) {
+    // Initialize distance array with maximum values
+    vector<int> dist(V, INT_MAX);
+    dist[src] = 0;
+
+    // Relax all edges V-1 times
+    for (int i = 0; i < V - 1; ++i) {
+        for (const Edge& edge : edges) {
+            if (dist[edge.src] != INT_MAX && dist[edge.src] + edge.weight < dist[edge.dest]) {
+                dist[edge.dest] = dist[edge.src] + edge.weight;
             }
         }
-        
-        int maxwait = 0;
-        for (int i = 1; i <= N; i++)
-            maxwait = Math.max(maxwait, dist[i]);
-        return maxwait == Integer.MAX_VALUE ? -1 : maxwait;
+    }
+
+    // Check for negative weight cycles
+    for (const Edge& edge : edges) {
+        if (dist[edge.src] != INT_MAX && dist[edge.src] + edge.weight < dist[edge.dest]) {
+            cout << "Graph contains negative weight cycle\n";
+            return;
+        }
+    }
+
+    // Print the distances from source vertex
+    cout << "Vertex   Distance from Source\n";
+    for (int i = 0; i < V; ++i) {
+        cout << i << "\t\t" << dist[i] << endl;
     }
 }
+

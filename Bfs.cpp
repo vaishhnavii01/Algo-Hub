@@ -1,52 +1,44 @@
-//BFS / Level Order Traversal
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
 
-//Level Order Traversal
+void bfs(vector<vector<int>>& graph, int start) {
+    int V = graph.size();
+    vector<bool> visited(V, false);
+    
+    queue<int> q;
+    q.push(start);
+    visited[start] = true;
 
-class Solution {
-    public List<Integer> levelOrder(TreeNode root) {
-        List<Integer> result = new ArrayList();
-        if(root == null)
-            return result;
-        
-        Queue<TreeNode> q = new LinkedList();
-        q.add(root);
-        while(q.size() > 0) {
-            root = q.poll();
-            result.add(root.val);
-            if(root.left != null)
-                q.add(root.left);
-            if(root.right != null)
-                q.add(root.right);
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        cout << u << " ";
+
+        for (int v : graph[u]) {
+            if (!visited[v]) {
+                q.push(v);
+                visited[v] = true;
+            }
         }
-        
-        return result;
     }
 }
 
-//Level Order Level By Level 
+int main() {
+    // Example graph representation using adjacency list
+    vector<vector<int>> graph = {
+        {1, 2},     // Neighbors of vertex 0
+        {0, 3, 4},  // Neighbors of vertex 1
+        {0, 5},     // Neighbors of vertex 2
+        {1},        // Neighbors of vertex 3
+        {1},        // Neighbors of vertex 4
+        {2}         // Neighbors of vertex 5
+    };
 
-class Solution {
-    public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> result = new ArrayList();
-        if(root == null)
-            return result;
-        
-        Queue<TreeNode> q = new LinkedList();
-        q.add(root);
-        while(q.size() > 0) {
-            int size = q.size();
-            List<Integer> level = new ArrayList();
-            while(size-- > 0) {
-                root = q.poll();
-                level.add(root.val);
-                if(root.left != null)
-                    q.add(root.left);
-                if(root.right != null)
-                    q.add(root.right);
-            }
-            result.add(level);
-        }
-        
-        return result;
-    }
+    cout << "BFS traversal starting from vertex 0: ";
+    bfs(graph, 0); // Start BFS traversal from vertex 0
+    cout << endl;
+
+    return 0;
 }
